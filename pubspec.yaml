@@ -1,7 +1,7 @@
 name: dartbot
 version: 1.0.0
 author: thevypr
-description: An irc bot template in Dart.
+description: An IRC bot template in Dart.
 homepage: http://thevypr.com
 dependencies:
   irc_client: any
