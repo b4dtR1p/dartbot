@@ -14,7 +14,7 @@ var settings = {
 class Bot extends Handler {
   bool onChannelMessage(String chan, String msg, Connection irc) {
     if(msg == "!ping") { irc.sendMessage(chan, "pong"); }
-    else if(msg == "!help") { irc.sendMessage(chan, "todo"); }
+    else if(msg == "!help") { irc.sendMessage(chan, "http://github.com/thevypr/dartbot/blob/master/README.md"); }
     
     return true;
   }
