@@ -13,25 +13,38 @@ var settings = {
 
 class Bot extends Handler {
   bool onChannelMessage(String chan, String msg, Connection irc) {
-    if(msg == "!ping") { irc.sendMessage(chan, "pong"); }
-    else if(msg == "!help") { irc.sendMessage(chan, "http://github.com/thevypr/dartbot/blob/master/README.md"); }
+    if(msg == "!ping") { 
+      print("[bot] command: ping");
+      irc.sendMessage(chan, "pong");
+    } else if(msg == "!dartvm") { 
+      print("[bot] command: dartvm");
+      irc.sendMessage(chan, "dartvm version: ${Platform.version}");
+    } else if(msg == "!help") { 
+      print("[bot] command: help");
+      irc.sendMessage(chan, "http://github.com/thevypr/dartbot/blob/master/README.md");
+    } else if(msg.startsWith("!")) {
+      print("[bot] invalid command");
+      irc.sendMessage(chan, "invalid command");
+    }
     
     return true;
   }
   
   bool onConnection(Connection irc) {
+    print("[bot] connection successful");
     irc.join(settings["chan"]);
-    
+    print("[bot] joined ${settings["chan"]}");
     return true;
   }
 }
 
 void main() {
-  print("[${settings["name"]}] Bot initialized.");
+  print("[bot] bot initialized");
+  print("[bot] using name '${settings["name"]}'");
   
-  Logger.root.level = Level.ALL;
+  Logger.root.level = Level.WARNING;
   Logger.root.onRecord.listen((r) {
-    print("${r.time}: ${r.loggerName} - ${r.message}");
+    print("[ERR] ${r.message}");
   });
   
   var bot = new IrcClient(settings["name"]);
@@ -39,4 +52,5 @@ void main() {
   
   bot.handlers.add(new Bot());
   bot.connect(settings["serv"], int.parse(settings["port"]));
+  print("[bot] connecting to ${settings["serv"]}:${settings["port"]}");
 }
