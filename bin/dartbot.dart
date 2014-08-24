@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:irc_client/irc_client.dart';
 import 'package:logging/logging.dart';
@@ -12,8 +11,8 @@ var settings = {
             "pref": "!",
 };
 
-void commandHandler(String chan, String cmd, Connection irc) {
-  cmd = cmd.substring(1);
+void commandHandler(String chan, String org, Connection irc) {
+  var cmd = org.substring(1);
   
   switch(cmd) {
     case "ping":
