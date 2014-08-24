@@ -9,23 +9,35 @@ var settings = {
             "port": "6667",
             "name": "cbra",
             "chan": "#bot",
+            "pref": "!",
 };
+
+void commandHandler(String chan, String cmd, Connection irc) {
+  cmd = cmd.substring(1);
+  
+  switch(cmd) {
+    case "ping":
+      print("[bot] command: ping");
+      irc.sendMessage(chan, "pong");
+      break;
+    case "dartvm":
+      print("[bot] command: dartvm");
+      irc.sendMessage(chan, "dartvm version: ${Platform.version}");
+      break;
+    case "help":
+      print("[bot] command: help");
+      irc.sendMessage(chan, "http://github.com/thevypr/dartbot/blob/master/README.md");
+      break;
+    default:
+      print("[bot] invalid command");
+      irc.sendMessage(chan, "invalid command");
+      break;
+  }
+}
 
 class Bot extends Handler {
   bool onChannelMessage(String chan, String msg, Connection irc) {
-    if(msg == "!ping") { 
-      print("[bot] command: ping");
-      irc.sendMessage(chan, "pong");
-    } else if(msg == "!dartvm") { 
-      print("[bot] command: dartvm");
-      irc.sendMessage(chan, "dartvm version: ${Platform.version}");
-    } else if(msg == "!help") { 
-      print("[bot] command: help");
-      irc.sendMessage(chan, "http://github.com/thevypr/dartbot/blob/master/README.md");
-    } else if(msg.startsWith("!")) {
-      print("[bot] invalid command");
-      irc.sendMessage(chan, "invalid command");
-    }
+    if(msg.startsWith(settings["pref"])) { commandHandler(chan, msg, irc); }
     
     return true;
   }
