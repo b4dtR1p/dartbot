@@ -66,7 +66,7 @@ class Bot extends Handler {
   bool onConnection(Connection irc) {
     print("[bot] connection successful");
     irc.join(settings["chan"]);
-    print("[bot] joined ${settings["chan"]}");
+    print("[bot] joined ${settings["chan"]}\n");
     return true;
   }
 }
