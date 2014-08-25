@@ -27,7 +27,7 @@ void commandHandler(String chan, String org, Connection irc) {
       break;
     case "dartvm":
       print("[bot] command: dartvm");
-      irc.sendMessage(chan, "dartvm version: ${Platform.version}");
+      irc.sendMessage(chan, "dartvm version: ${Platform.version.split(" on")[0]}");
       break;
     case "help":
       print("[bot] command: help");
