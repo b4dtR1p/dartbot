@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:irc_client/irc_client.dart';
 import 'package:logging/logging.dart';
@@ -12,7 +13,12 @@ var settings = {
 };
 
 void commandHandler(String chan, String org, Connection irc) {
-  var cmd = org.substring(1);
+  var ncmd = org.substring(1);
+  var cmd = ncmd;
+  
+  if(org.contains(" ")) {
+    cmd = ncmd.split(" ")[0];
+  }
   
   switch(cmd) {
     case "ping":
@@ -27,6 +33,22 @@ void commandHandler(String chan, String org, Connection irc) {
       print("[bot] command: help");
       irc.sendMessage(chan, "http://github.com/thevypr/dartbot/blob/master/README.md");
       break;
+    case "sqrt":
+    	if(org.contains(" ")) {
+	    	var arg = org.split(" ")[1];
+	    	try {
+	    		var fin = sqrt(num.parse(arg));
+	    		print("[bot] command: sqrt($arg)");
+          irc.sendMessage(chan, "$fin");
+	    	} catch(e) {
+	    		print("[bot] invalid sqrt request");
+	    		irc.sendMessage(chan, "invalid argument");
+	    	}
+    	} else {
+    		print("[bot] invalid sqrt request");
+    		irc.sendMessage(chan, "no argument found");
+    	}
+    	break;
     default:
       print("[bot] invalid command");
       irc.sendMessage(chan, "invalid command");
