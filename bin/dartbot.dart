@@ -12,11 +12,13 @@ var settings = {
             "pref": "!",
 };
 
-void commandHandler(String chan, String org, Connection irc) {
-  var ncmd = org.substring(1);
+var sndr;
+
+void commandHandler(String chan, String sndr, String msg, Connection irc) {
+  var ncmd = msg.substring(1);
   var cmd = ncmd;
   
-  if(org.contains(" ")) {
+  if(msg.contains(" ")) {
     cmd = ncmd.split(" ")[0];
   }
   
@@ -35,12 +37,13 @@ void commandHandler(String chan, String org, Connection irc) {
       irc.sendMessage(chan, "you rolled a ${r.nextInt(6) + 1}");
       break;
     case "sqrt":
-    	if(org.contains(" ")) {
-	    	var arg = org.split(" ")[1];
+    	if(msg.contains(" ")) {
+	    	var arg = msg.split(" ")[1];
+	    	arg = num.parse(arg);
 	    	try {
-	    		var fin = sqrt(num.parse(arg));
-	    		print("[cmd] sqrt(${num.parse(arg)})");
-          if(fin > 0) {
+	    	  if(arg > -1) {
+  	    		var fin = sqrt(arg);
+  	    		print("[cmd] sqrt($arg)");
             irc.sendMessage(chan, "$fin");
           } else {
             print("[cmd] invalid sqrt request - err: not a number");
@@ -71,7 +74,7 @@ void commandHandler(String chan, String org, Connection irc) {
 
 class Bot extends Handler {
   bool onChannelMessage(String chan, String msg, Connection irc) {
-    if(msg.startsWith(settings["pref"])) { commandHandler(chan, msg, irc); }
+    if(msg.startsWith(settings["pref"])) { commandHandler(chan, sndr, msg, irc); }
     
     return true;
   }
@@ -88,15 +91,16 @@ void main() {
   print("[bot] bot initialized");
   print("[bot] using name '${settings["name"]}'");
   
-  Logger.root.level = Level.WARNING;
-  Logger.root.onRecord.listen((r) {
-    print("[ERR] ${r.message}");
-  });
-  
   var bot = new IrcClient(settings["name"]);
   bot.realName = settings["name"] + " - using the dartbot template by thevypr";
   
   bot.handlers.add(new Bot());
+  var handler = bot.handlers.first;
   bot.connect(settings["serv"], int.parse(settings["port"]));
   print("[bot] connecting to ${settings["serv"]}:${settings["port"]}");
+  
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((r) {
+    if(r.message.contains("PRIVMSG")) sndr = r.message.split("!")[0].split(":")[1];
+  });
 }
