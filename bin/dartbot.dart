@@ -7,7 +7,7 @@ import 'package:logging/logging.dart';
 var settings = {
             "serv": "irc.iotek.org",
             "port": "6667",
-            "name": "cbra",
+            "name": "dart",
             "chan": "#bot",
             "pref": "!",
 };
@@ -22,35 +22,48 @@ void commandHandler(String chan, String org, Connection irc) {
   
   switch(cmd) {
     case "ping":
-      print("[bot] command: ping");
+      print("[cmd] ping");
       irc.sendMessage(chan, "pong");
       break;
-    case "dartvm":
-      print("[bot] command: dartvm");
-      irc.sendMessage(chan, "dartvm version: ${Platform.version.split(" on")[0]}");
-      break;
     case "help":
-      print("[bot] command: help");
+      print("[cmd] help");
       irc.sendMessage(chan, "http://github.com/thevypr/dartbot/blob/master/README.md");
+      break;
+    case "rtd":
+      Random r = new Random();
+      print("[cmd] rtd");
+      irc.sendMessage(chan, "you rolled a ${r.nextInt(6) + 1}");
       break;
     case "sqrt":
     	if(org.contains(" ")) {
 	    	var arg = org.split(" ")[1];
 	    	try {
 	    		var fin = sqrt(num.parse(arg));
-	    		print("[bot] command: sqrt($arg)");
-          irc.sendMessage(chan, "$fin");
+	    		print("[cmd] sqrt(${num.parse(arg)})");
+          if(fin > 0) {
+            irc.sendMessage(chan, "$fin");
+          } else {
+            print("[cmd] invalid sqrt request - err: not a number");
+            irc.sendMessage(chan, "invalid argument");
+          }
 	    	} catch(e) {
-	    		print("[bot] invalid sqrt request");
+	    		print("[cmd] invalid sqrt request - $e");
 	    		irc.sendMessage(chan, "invalid argument");
 	    	}
     	} else {
-    		print("[bot] invalid sqrt request");
+    		print("[cmd] invalid sqrt request - err: no argument found");
     		irc.sendMessage(chan, "no argument found");
     	}
     	break;
+    case "info":
+      print("[cmd] info");
+      irc.sendMessage(chan, "server: ${settings["serv"]}:${settings["port"]} (channel: ${settings["chan"]})");
+      irc.sendMessage(chan, "dartvm version: ${Platform.version.split(" ")[0]} on ${Platform.operatingSystem}");
+      irc.sendMessage(chan, "cmdprefix: ${settings["pref"]}");
+      irc.sendMessage(chan, "using dartbot 0.4.2 - http://git.io/HbduzQ");
+      break;
     default:
-      print("[bot] invalid command");
+      print("[cmd] err: invalid");
       irc.sendMessage(chan, "invalid command");
       break;
   }
