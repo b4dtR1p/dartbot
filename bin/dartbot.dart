@@ -24,17 +24,17 @@ void commandHandler(String chan, String sndr, String msg, Connection irc) {
   
   switch(cmd) {
     case "ping":
-      print("[cmd] ping");
-      irc.sendMessage(chan, "pong");
+      print("[cmd] $sndr: ping");
+      irc.sendMessage(chan, "$sndr: pong");
       break;
     case "help":
       print("[cmd] help");
-      irc.sendMessage(chan, "http://github.com/thevypr/dartbot/blob/master/README.md");
+      irc.sendMessage(chan, "$sndr: http://github.com/thevypr/dartbot/blob/master/README.md");
       break;
     case "rtd":
       Random r = new Random();
-      print("[cmd] rtd");
-      irc.sendMessage(chan, "you rolled a ${r.nextInt(6) + 1}");
+      print("[cmd] $sndr: rtd");
+      irc.sendMessage(chan, "$sndr: you rolled a ${r.nextInt(6) + 1}");
       break;
     case "sqrt":
     	if(msg.contains(" ")) {
@@ -43,31 +43,24 @@ void commandHandler(String chan, String sndr, String msg, Connection irc) {
 	    	try {
 	    	  if(arg > -1) {
   	    		var fin = sqrt(arg);
-  	    		print("[cmd] sqrt($arg)");
-            irc.sendMessage(chan, "$fin");
+  	    		print("[cmd] $sndr: sqrt($arg)");
+            irc.sendMessage(chan, "$sndr: $fin");
           } else {
             print("[cmd] invalid sqrt request - err: not a number");
-            irc.sendMessage(chan, "invalid argument");
+            irc.sendMessage(chan, "$sndr: invalid argument");
           }
 	    	} catch(e) {
 	    		print("[cmd] invalid sqrt request - $e");
-	    		irc.sendMessage(chan, "invalid argument");
+	    		irc.sendMessage(chan, "$sndr: invalid argument");
 	    	}
     	} else {
     		print("[cmd] invalid sqrt request - err: no argument found");
-    		irc.sendMessage(chan, "no argument found");
+    		irc.sendMessage(chan, "$sndr: no argument found");
     	}
     	break;
-    case "info":
-      print("[cmd] info");
-      irc.sendMessage(chan, "server: ${settings["serv"]}:${settings["port"]} (channel: ${settings["chan"]})");
-      irc.sendMessage(chan, "dartvm version: ${Platform.version.split(" ")[0]} on ${Platform.operatingSystem}");
-      irc.sendMessage(chan, "cmdprefix: ${settings["pref"]}");
-      irc.sendMessage(chan, "using dartbot 0.4.2 - http://git.io/HbduzQ");
-      break;
     default:
       print("[cmd] err: invalid");
-      irc.sendMessage(chan, "invalid command");
+      irc.sendMessage(chan, "$sndr: invalid command");
       break;
   }
 }
