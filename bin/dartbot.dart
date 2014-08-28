@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:irc_client/irc_client.dart';
@@ -17,9 +16,16 @@ var sndr;
 void commandHandler(String chan, String sndr, String msg, Connection irc) {
   var ncmd = msg.substring(1);
   var cmd = ncmd;
+  var arg;
   
   if(msg.contains(" ")) {
     cmd = ncmd.split(" ")[0];
+    try {
+      arg = msg.split(" ")[1];
+    } catch(e) {
+      print("[cmd] received command with no argument");
+      irc.sendMessage(chan, "$sndr: no argument found");
+    }
   }
   
   switch(cmd) {
@@ -37,26 +43,20 @@ void commandHandler(String chan, String sndr, String msg, Connection irc) {
       irc.sendMessage(chan, "$sndr: you rolled a ${r.nextInt(6) + 1}");
       break;
     case "sqrt":
-    	if(msg.contains(" ")) {
-	    	var arg = msg.split(" ")[1];
-	    	arg = num.parse(arg);
-	    	try {
-	    	  if(arg > -1) {
-  	    		var fin = sqrt(arg);
-  	    		print("[cmd] $sndr: sqrt($arg)");
-            irc.sendMessage(chan, "$sndr: $fin");
-          } else {
-            print("[cmd] invalid sqrt request - err: not a number");
-            irc.sendMessage(chan, "$sndr: invalid argument");
-          }
-	    	} catch(e) {
-	    		print("[cmd] invalid sqrt request - $e");
-	    		irc.sendMessage(chan, "$sndr: invalid argument");
-	    	}
-    	} else {
-    		print("[cmd] invalid sqrt request - err: no argument found");
-    		irc.sendMessage(chan, "$sndr: no argument found");
-    	}
+	    try {
+	      arg = num.parse(arg);
+	    	if(arg > -1) {
+  	      var fin = sqrt(arg);
+  	    	print("[cmd] $sndr: sqrt($arg)");
+          irc.sendMessage(chan, "$sndr: $fin");
+         } else {
+          print("[cmd] invalid sqrt request - err: not a number");
+          irc.sendMessage(chan, "$sndr: invalid argument");
+         }
+	    } catch(e) {
+	    	print("[cmd] invalid sqrt request");
+	    	irc.sendMessage(chan, "$sndr: invalid argument");
+	   	}
     	break;
     default:
       print("[cmd] err: invalid");
