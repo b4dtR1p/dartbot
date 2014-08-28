@@ -6,7 +6,8 @@ An IRC bot template in Dart.
 ----
 ##help
     !ping - sends a "pong" message
-    !dartvm - sends the vm version
+    !rtd - roll the dice (goes up to 10)
+    !info - lists info about the bot, including vm version and OS
     !sqrt <arg> - gets the square root of the argument
     !help - sends a link to this page
     
